@@ -2,19 +2,14 @@ import { useState } from 'react'
 import styles from './Todo.module.css'
 import AddItemForm from '../components/AddItemForm'
 import TodoItem from '../components/TodoItem'
+import { useSelector, useDispatch } from 'react-redux'
+import { addItem, completeItem, deleteItem } from '../features/todo/todoSlice'
 
-const defaultItems = [
-  {
-    id: 0,
-    title: 'Купить хлеб',
-    completed: false,
-  },
-]
+
 
 function Todo() {
-  const [items, setItems] = useState(defaultItems)
-
-  console.log(styles)
+  const items = useSelector((state) => state.todo)
+  const dispatch = useDispatch()
 
   const handleSubmit = (title) => {
     const newItem = {
@@ -22,28 +17,19 @@ function Todo() {
       title,
       completed: false,
     }
-    setItems([...items, newItem])
+    dispatch(addItem(newItem))
   }
 
-  const handleItemComplete = (clickedItem) => {
-    const newItems = items.map((item) => {
-      if (item.id === clickedItem.id) {
-        return {
-          ...item,
-          completed: !item.completed,
-        }
-      }
-      return item
-    })
-
-    setItems(newItems)
+  const handleItemComplete = (item) => {
+    dispatch(completeItem(item))
   }
 
-  const handleItemDelete = (clickedItem) => {
-    const newItem = items.filter((item) => item.id !== clickedItem.id)
+  const handleItemDelete = (item) => {
+    dispatch(deleteItem(item))
 
-    setItems(newItem)
   }
+
+
 
   return (
     <div className={styles.container}>
